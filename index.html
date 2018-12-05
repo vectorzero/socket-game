@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <link href="https://unpkg.com/nes.css/css/nes.min.css" rel="stylesheet" />
+    <style>
+        .chat-obj {
+            position: absolute;
+            top: 35%;
+        }
+        .input-wrap {
+            text-align: center;
+            margin-top: 20%;
+        }
+        .dialog-wrap {
+            margin-left: 25%;
+        }
+        #startBtn {
+            margin-top: 4%;
+        }
+    </style>
+</head>
+<body style="overflow-y: hidden">
+    <div class="container is-rounded is-dark">
+        <p id="mess" style="color: white;">Connecting...</p>
+    </div>
+    <div>
+        Sounds:
+        <label>
+            <input type="radio" class="radio" name="answer" checked="">
+            <span>Yes</span>
+        </label>
+        <label>
+            <input type="radio" class="radio" name="answer">
+            <span>No</span>
+        </label>
+    </div>
+    <i class="octocat animate chat-obj"></i>
+    <div class="balloon from-left dialog-wrap">
+        <p>Let's play<br/>a game!<i class="nes-logo"></i></p>
+    </div>
+    <div class="input-wrap">
+        <input type="text" id="inputValue" class="input" placeholder="input message">
+        <button type="button" id="startBtn" class="btn is-primary">Send</button>
+    </div>
+    <script>
+        const mess = document.getElementById("mess");
+        const inputValue = document.getElementById("inputValue");
+        const startBtn = document.getElementById("startBtn");
+        if(window.WebSocket){
+            const ws = new WebSocket('ws://192.168.0.109:8111');
+            ws.onopen = function(e){
+                console.log("连接服务器成功");
+                ws.send("game1");
+            }
+            ws.onclose = function(e){
+                console.log("服务器关闭");
+            }
+            ws.onerror = function(){
+                console.log("连接出错");
+            }
+            ws.onmessage = function(e){
+                mess.innerHTML = "Connected!"
+                document.getElementById("startBtn").onclick = function(e){
+                    let time = new Date();
+                    ws.send(time + inputValue.value);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
