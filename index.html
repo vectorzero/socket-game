@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Document</title>
+    <title>Controller</title>
     <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
     <link href="https://unpkg.com/nes.css/css/nes.min.css" rel="stylesheet" />
     <style>
@@ -12,13 +12,19 @@
         }
         .input-wrap {
             text-align: center;
-            margin-top: 20%;
+            margin-top: 10%;
+        }
+        .btn-up {
+            margin-top: 5%;
+        }
+        .btn-left {
+            margin-right: 5%;
+        }
+        .btn-right {
+            margin-left: 5%;
         }
         .dialog-wrap {
             margin-left: 25%;
-        }
-        #startBtn {
-            margin-top: 4%;
         }
     </style>
 </head>
@@ -42,30 +48,54 @@
         <p>Let's play<br/>a game!<i class="nes-logo"></i></p>
     </div>
     <div class="input-wrap">
-        <input type="text" id="inputValue" class="input" placeholder="input message">
-        <button type="button" id="startBtn" class="btn is-primary">Send</button>
+        <button type="button" id="start" class="btn">Start</button>
+        <div>
+            <button id="up" type="button" class="btn is-success btn-up">👆</button>
+        </div>
+        <div>
+            <button id="left" type="button" class="btn is-error btn-left">👈</button>
+            <button id="right" type="button" class="btn is-primary btn-right">👉</button>
+        </div>
+        <div>
+            <button id="down" type="button" class="btn is-warning btn-down">👇</button>
+        </div>
     </div>
     <script>
         const mess = document.getElementById("mess");
-        const inputValue = document.getElementById("inputValue");
-        const startBtn = document.getElementById("startBtn");
+        const $up = document.getElementById("up");
+        const $left = document.getElementById("left");
+        const $right = document.getElementById("right");
+        const $down = document.getElementById("down");
+        const $start = document.getElementById("start");
         if(window.WebSocket){
             const ws = new WebSocket('ws://192.168.0.109:8111');
             ws.onopen = function(e){
                 console.log("连接服务器成功");
-                ws.send("game1");
+                ws.send("controller");
             }
             ws.onclose = function(e){
                 console.log("服务器关闭");
+                mess.innerHTML = "Close!";
             }
             ws.onerror = function(){
                 console.log("连接出错");
+                mess.innerHTML = "Error!";
             }
-            ws.onmessage = function(e){
-                mess.innerHTML = "Connected!"
-                document.getElementById("startBtn").onclick = function(e){
-                    let time = new Date();
-                    ws.send(time + inputValue.value);
+            ws.onmessage = function(e) {
+                $start.onclick = function(e) {
+                    mess.innerHTML = "Connected!";
+                }
+                $up.onclick = function(e) {
+                    ws.send('up');
+                }
+                $down.onclick = function(e) {
+                    ws.send('down');
+                }
+                $left.onclick = function(e) {
+                    ws.send('left');
+                }
+                $right.onclick = function(e) {
+                    ws.send('right');
                 }
             }
         }

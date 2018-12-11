@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Game</title>
+    <title>Display</title>
     <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
     <style>
 
@@ -12,13 +12,13 @@
     Message:
     <div id="mess"></div>
     <script>
-        var mess = document.getElementById("mess");
+        const mess = document.getElementById("mess");
         if(window.WebSocket){
-            var ws = new WebSocket('ws://localhost:8111');
+            const ws = new WebSocket('ws://192.168.0.109:8111');
 
             ws.onopen = function(e){
                 console.log("连接服务器成功");
-                ws.send("game2");
+                ws.send("display");
             }
             ws.onclose = function(e){
                 console.log("服务器关闭");
@@ -28,8 +28,7 @@
             }
 
             ws.onmessage = function(e){
-                var time = new Date();
-                mess.innerHTML+=time+"的消息："+e.data+"<br>"
+                mess.innerHTML+= e.data+"<br>"
             }
         }
     </script>
