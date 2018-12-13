@@ -2,119 +2,78 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Controller</title>
+    <title>Display</title>
     <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
-    <link href="https://unpkg.com/nes.css/css/nes.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" type="text/css" />
     <style>
-        .chat-obj {
+        #qrcode {
             position: absolute;
-            top: 35%;
-        }
-        .input-wrap {
-            text-align: center;
-            margin-top: 10%;
-        }
-        .btn-up {
-            margin-top: 5%;
-        }
-        .btn-left {
-            margin-right: 5%;
-        }
-        .btn-right {
-            margin-left: 5%;
-        }
-        .dialog-wrap {
-            margin-left: 25%;
+            left: 50%;
+            top: 50%;
+            z-index: 1;
+            margin-left: -45px;
+            margin-top: -40px;
         }
     </style>
 </head>
-<body style="overflow-y: hidden">
-    <div class="container is-rounded is-dark">
-        <p id="mess" style="color: white;">Connecting...</p>
-    </div>
-    <div>
-        Sounds:
-        <label>
-            <input type="radio" class="radio" name="answer" checked="">
-            <span>Yes</span>
-        </label>
-        <label>
-            <input type="radio" class="radio" name="answer">
-            <span>No</span>
-        </label>
-    </div>
-    <i class="octocat animate chat-obj"></i>
-    <div class="balloon from-left dialog-wrap">
-        <p>Let's play<br/>a game!<i class="nes-logo"></i></p>
-    </div>
-    <div class="input-wrap">
-        <button type="button" id="start" class="btn">Start</button>
-        <div>
-            <button id="up" type="button" class="btn is-success btn-up">👆</button>
+<body>
+    <div id="qrcode"></div>
+    <div id="emoji-man">
+        <div id="head">
+            <p>😏</p>
         </div>
-        <div>
-            <button id="left" type="button" class="btn is-error btn-left">👈</button>
-            <button id="right" type="button" class="btn is-primary btn-right">👉</button>
+        <div id="torso">
+            <div class="arm" id="left-arm">
+            <p>💪</p>
+            </div>
+            <div id="body">
+            <p>👕</p>
+            </div>
+            <div class="arm" id="right-arm">
+            <p>💪</p>
+            </div>
         </div>
-        <div>
-            <button id="down" type="button" class="btn is-warning btn-down">👇</button>
+        <div id="bottom">
+            <div class="foot" id="left-foot">
+            <p>👟</p>
+            </div>
+            <div id="legs">
+            <p>👖</p>
+            </div>
+            <div class="foot" id="right-foot">
+            <p>👟</p>
+            </div>
         </div>
     </div>
-    <button class="btn emoji">😏</button>
-    <button class="btn emoji">😃</button>
-    <button class="btn emoji">😋</button>
-    <button class="btn emoji">🤯</button>
-    <button class="btn emoji">😍</button>
-    <button class="btn emoji">😭</button>
-    <button class="btn emoji">🤩</button>
-    <button class="btn emoji">😒</button>
-    <button class="btn emoji">🤑</button>
-    <button class="btn emoji">🤬</button>
-    <button class="btn emoji">🧐</button>
-    <button class="btn emoji">🤖</button>
+    <script src="https://cdn.bootcss.com/qrcode-generator/1.4.1/qrcode.min.js"></script>
     <script>
+        let qr = qrcode(5,'L');
+        qr.addData(`http://${location.hostname}:8000/controller.html`);
+        qr.make();
+        document.getElementById('qrcode').innerHTML = qr.createImgTag();       
+        const identity = document.querySelector("#head > p");
+        function changeIdenttity(newIdentity) {
+            identity.classList.add("changed");
+            identity.innerHTML = newIdentity;
+            setTimeout(function(){ identity.classList.remove("changed"); }, 500);
+        };
+        //https://codepen.io/lazercaveman/pen/zaXQyX
         const mess = document.getElementById("mess");
-        const $up = document.getElementById("up");
-        const $left = document.getElementById("left");
-        const $right = document.getElementById("right");
-        const $down = document.getElementById("down");
-        const $start = document.getElementById("start");
-        const $emoji = document.getElementsByClassName("emoji");
         if(window.WebSocket){
             const ws = new WebSocket(`ws://${location.hostname}:8111`);
+
             ws.onopen = function(e){
                 console.log("连接服务器成功");
-                ws.send("😏");
+                ws.send("display");
             }
             ws.onclose = function(e){
                 console.log("服务器关闭");
-                mess.innerHTML = "Close!";
             }
             ws.onerror = function(){
                 console.log("连接出错");
-                mess.innerHTML = "Error!";
             }
             ws.onmessage = function(e) {
-                $start.onclick = function(e) {
-                    mess.innerHTML = "Connected!";
-                }
-                $up.onclick = function(e) {
-                    ws.send('up');
-                }
-                $down.onclick = function(e) {
-                    ws.send('down');
-                }
-                $left.onclick = function(e) {
-                    ws.send('left');
-                }
-                $right.onclick = function(e) {
-                    ws.send('right');
-                }
-                for(let i in $emoji) {
-                    $emoji[i].onclick = function() {
-                        ws.send(this.innerHTML)
-                    }
-                }
+                changeIdenttity(e.data)
             }
         }
     </script>
