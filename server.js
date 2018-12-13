@@ -5,7 +5,7 @@ var $controller = null,$display = null , $controllerReady = false , $displayRead
 var server = ws.createServer(function(conn){
     conn.on("text", function (str) {
         console.log("收到的信息为:"+str)
-        if(str === "controller") {
+        if(str === "😏") {
             $controller = conn;
             $controllerReady = true;
             conn.sendText("success");
@@ -17,7 +17,7 @@ var server = ws.createServer(function(conn){
         if($controllerReady && $displayReady){
             $display.sendText(str);
         }
-        conn.sendText("Let's go!")
+        conn.sendText("😃")
     })
     conn.on("close", function (code, reason) {
         console.log("关闭连接")

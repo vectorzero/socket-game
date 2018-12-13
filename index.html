@@ -60,6 +60,18 @@
             <button id="down" type="button" class="btn is-warning btn-down">👇</button>
         </div>
     </div>
+    <button class="btn emoji">😏</button>
+    <button class="btn emoji">😃</button>
+    <button class="btn emoji">😋</button>
+    <button class="btn emoji">🤯</button>
+    <button class="btn emoji">😍</button>
+    <button class="btn emoji">😭</button>
+    <button class="btn emoji">🤩</button>
+    <button class="btn emoji">😒</button>
+    <button class="btn emoji">🤑</button>
+    <button class="btn emoji">🤬</button>
+    <button class="btn emoji">🧐</button>
+    <button class="btn emoji">🤖</button>
     <script>
         const mess = document.getElementById("mess");
         const $up = document.getElementById("up");
@@ -67,11 +79,12 @@
         const $right = document.getElementById("right");
         const $down = document.getElementById("down");
         const $start = document.getElementById("start");
+        const $emoji = document.getElementsByClassName("emoji");
         if(window.WebSocket){
-            const ws = new WebSocket('ws://192.168.0.109:8111');
+            const ws = new WebSocket(`ws://${location.hostname}:8111`);
             ws.onopen = function(e){
                 console.log("连接服务器成功");
-                ws.send("controller");
+                ws.send("😏");
             }
             ws.onclose = function(e){
                 console.log("服务器关闭");
@@ -96,6 +109,11 @@
                 }
                 $right.onclick = function(e) {
                     ws.send('right');
+                }
+                for(let i in $emoji) {
+                    $emoji[i].onclick = function() {
+                        ws.send(this.innerHTML)
+                    }
                 }
             }
         }
