@@ -48,7 +48,7 @@
     <script src="https://cdn.bootcss.com/qrcode-generator/1.4.1/qrcode.min.js"></script>
     <script>
         let qr = qrcode(5,'L');
-        qr.addData(`http://${location.hostname}:8000/controller.html`);
+        qr.addData(`http://${location.hostname}:${location.port}/controller.html`);
         qr.make();
         document.getElementById('qrcode').innerHTML = qr.createImgTag();       
         const identity = document.querySelector("#head > p");
